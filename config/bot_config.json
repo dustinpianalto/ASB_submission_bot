@@ -3,6 +3,7 @@
     "admin",
     "uploader",
     "utils",
-    "git"
+    "git",
+    "events"
   ]
 }
