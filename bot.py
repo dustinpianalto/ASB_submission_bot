@@ -47,6 +47,7 @@ class Submitter(commands.Bot):
         self.db_con = None
         self.default_prefix = '!'
         self.tpe = futures.ThreadPoolExecutor()
+        self.embed_color = discord.Colour.from_rgb(49, 107, 111)
         self.unicode_emojis: Dict[str, str] = {
                                         'x': '❌',
                                         'y': '✅',

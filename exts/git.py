@@ -21,7 +21,7 @@ class Git:
     async def pull(self, ctx):
         em = discord.Embed(style='rich',
                            title=f'Git Pull',
-                           color=embed_color)
+                           color=self.bot.embed_color)
         em.set_thumbnail(url=f'{ctx.guild.me.avatar_url}')
         result = await asyncio.wait_for(self.bot.loop.create_task(run_command('git fetch --all')), 120) + '\n'
         result += await asyncio.wait_for(self.bot.loop.create_task(run_command('git reset --hard '
@@ -40,7 +40,7 @@ class Git:
     async def status(self, ctx):
         em = discord.Embed(style='rich',
                            title=f'Git Pull',
-                           color=embed_color)
+                           color=self.bot.embed_color)
         em.set_thumbnail(url=f'{ctx.guild.me.avatar_url}')
         result = await asyncio.wait_for(self.bot.loop.create_task(run_command('git status')), 10)
         results = paginate(result, maxlen=1014)
