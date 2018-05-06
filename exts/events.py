@@ -10,7 +10,7 @@ class BotEvents:
 
     async def on_guild_join(self, guild):
         await self.bot.db_con.execute("insert into guild_config(guild_id, channel_lockdown, admin_roles) "
-                                      "values ($1, $2, $3)", guild.id, False, guild.role_hierarchy[0])
+                                      "values ($1, $2, $3)", guild.id, False, [guild.role_hierarchy[0].id])
         events_log.info(f'Entry Created for {guild.name}')
         await guild.me.edit(nick='[!] Submitter')
 
