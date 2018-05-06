@@ -3,6 +3,7 @@ import sys
 import asyncio
 import discord
 from discord.ext.commands.formatter import Paginator
+import numpy as np
 
 
 class Capturing(list):
@@ -81,3 +82,20 @@ async def run_command(args):
     stdout, stderr = await process.communicate()
     # Return stdout
     return stdout.decode().strip()
+
+
+def get_guid(id1: int, id2: int):
+    id_int = (id1 << 32) | (id2 & 0xFFFFFFFF)
+    b = id_int.to_bytes(16, byteorder='little')
+    _a = (int(b[3]) << 24) | (int(b[2]) << 16) | (int(b[1]) << 8) | b[0]
+    _b = np.short((int(b[5]) << 8) | b[4])
+    _c = np.short((int(b[7]) << 8) | b[6])
+    _d = b[8]
+    _e = b[9]
+    _f = b[10]
+    _g = b[11]
+    _h = b[12]
+    _i = b[13]
+    _j = b[14]
+    _k = b[15]
+    return _a ^ ((int(_b) << 16) | int(np.ushort(_c))) ^ ((int(_f) << 24) | _k)
