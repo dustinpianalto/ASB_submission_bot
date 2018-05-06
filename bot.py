@@ -26,6 +26,7 @@ extension_dir = 'exts'
 owner_id = 351794468870946827
 bot_config_file = 'bot_config.json'
 secrets_file = 'bot_secrets.json'
+config_dir = 'config/'
 
 description = 'Submission Bot for Ark Smart Breeder'
 
