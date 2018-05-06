@@ -6,6 +6,7 @@ import aiohttp
 import asyncpg
 from concurrent import futures
 from typing import Dict
+from datetime import datetime
 
 log_format = '{asctime}.{msecs:03.0f}|{levelname:<8}|{name}::{message}'
 date_format = '%Y.%m.%d %H.%M.%S'
