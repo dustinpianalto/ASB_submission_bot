@@ -79,7 +79,7 @@ class Submitter(commands.Bot):
 
     async def close(self):
         await super().close()
-        self.aio_session.close()  # aiohttp is drunk and can't decide if it's a coro or not
+        await self.aio_session.close()
 
 
 bot = Submitter(description=description, case_insensitive=True)
