@@ -1,6 +1,8 @@
 {
   "load_list": [
     "admin",
-    "uploader"
+    "uploader",
+    "utils",
+    "git"
   ]
 }
