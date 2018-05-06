@@ -4,6 +4,7 @@ from .imports import checks, utils
 import json
 import logging
 import inspect
+import os
 
 admin_log = logging.getLogger('admin')
 config_dir = 'config/'
@@ -13,6 +14,14 @@ bot_config_file = 'bot_config.json'
 class Admin:
     def __init__(self, bot):
         self.bot = bot
+
+    @commands.command(hidden=True)
+    @commands.is_owner()
+    async def reboot(self, ctx):
+        await ctx.send('Submitter is restarting.')
+        with open(f'{config_dir}reboot', 'w') as f:
+            f.write(f'1\n{ctx.channel.id}')
+        os._exit(1)
 
     @commands.group(case_insensitive=True)
     async def set(self, ctx):
