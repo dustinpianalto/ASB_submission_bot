@@ -87,11 +87,15 @@ async def run_command(args):
 
 def hex_to_char(a: int):
     a = a & 0xf
-    return str(a - 10 + 0x61 if a > 9 else a + 0x30)
+    out = str(a - 10 + 0x61 if a > 9 else a + 0x30)
+    print(out)
+    return out
 
 
 def hexs_to_chars(_a, _b):
-    return f'{hex_to_char(_a>>4)}{hex_to_char(_a)}{hex_to_char(_b>>4)}{hex_to_char(_b)}'
+    out = f'{hex_to_char(_a>>4)}{hex_to_char(_a)}{hex_to_char(_b>>4)}{hex_to_char(_b)}'
+    print(out)
+    return out
 
 
 def to_string(guid):
