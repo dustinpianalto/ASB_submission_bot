@@ -19,8 +19,8 @@ class Utils:
         msg = await ctx.send(embed=em)
         time1 = ctx.message.created_at
         time = (msg.created_at - time1).total_seconds() * 1000
-        em.description = f'''Response Time: **{math.ceil(time)}ms**
-        Discord Latency: **{math.ceil(self.bot.latency*1000)}ms**'''
+        em.description = f'Response Time: **{math.ceil(time)}ms**\n' \
+                         f'Discord Latency: **{math.ceil(self.bot.latency*1000)}ms**'
         await msg.edit(embed=em)
 
     @commands.command(aliases=['oauth', 'link'])
@@ -31,7 +31,7 @@ class Utils:
         """
         guy = guy or self.bot.user
         url = discord.utils.oauth_url(guy.id)
-        await ctx.send(f'**{url}**')
+        await ctx.send(f'**<{url}>**')
 
     @commands.command()
     @commands.is_owner()
