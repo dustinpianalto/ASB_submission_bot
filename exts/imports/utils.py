@@ -4,7 +4,7 @@ import asyncio
 import discord
 from discord.ext.commands.formatter import Paginator
 import numpy as np
-from struct import Struct
+from struct import Struct, pack
 
 
 class Capturing(list):
@@ -87,14 +87,12 @@ async def run_command(args):
 
 def hex_to_char(a: int):
     a = a & 0xf
-    out = str(a - 10 + 0x61 if a > 9 else a + 0x30)
-    print(out)
+    out = chr(a - 10 + 0x61 if a > 9 else a + 0x30)
     return out
 
 
 def hexs_to_chars(_a, _b):
     out = f'{hex_to_char(_a>>4)}{hex_to_char(_a)}{hex_to_char(_b>>4)}{hex_to_char(_b)}'
-    print(out)
     return out
 
 
@@ -115,14 +113,14 @@ def to_string(guid):
     return output
 
 
-def get_guid(id1: int, id2: int):
-    id_int = (id1 << 32) | (id2 & 0xFFFFFFFF)
-    b = id_int.to_bytes(16, byteorder='little')
-    s = Struct('i2h8i')
+def get_guid_string(id1: int, id2: int):
+    id1, id2 = (id1 << 32), (id2 & 0xFFFFFFFF)
+    id_int = id1 | id2
+    b = pack('q8x', id_int)
+    s = Struct('i2h8b')
     guid = s.pack((int(b[3]) << 24) | (int(b[2]) << 16) | (int(b[1]) << 8) | b[0],
                   ((int(b[5]) << 8) | b[4]),
                   (int(b[7]) << 8) | b[6],
                   *b[8:16]
                   )
     return to_string(s.unpack(guid))
-    # return _a ^ ((int(_b) << 16) | int(np.ushort(_c))) ^ ((int(_f) << 24) | _k)
