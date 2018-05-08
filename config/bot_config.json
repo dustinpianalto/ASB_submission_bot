@@ -5,5 +5,32 @@
     "utils",
     "git",
     "events"
-  ]
+  ],
+  "ignore_strings": {
+    "game.ini": [
+      "OverridePlayerLevelEngramPoints",
+      "ConfigOverrideItemCraftingCosts",
+      "OverrideNamedEngramEntries",
+      "PGTerrainPropertiesString",
+      "ConfigOverrideSupplyCrateItems",
+      "HarvestResourceItemAmountClassMultipliers",
+      "None",
+      "ModIDS",
+      "PGFavorites",
+      "PGLastUsedSettings_v2"
+    ],
+    "dino.ini": []
+  },
+  "keep_blocks": {
+    "game.ini": ["/script/shootergame.shootergamemode"],
+    "dino.ini": [
+      "Dino Data",
+      "Colorization",
+      "Max Character Status Values",
+      "Dino Ancestry"
+    ]
+  },
+  "mods": {
+    "/Game/Mods/ClassicFlyers": "895711211"
+  }
 }
