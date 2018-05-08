@@ -31,8 +31,8 @@ def to_string(guid):
 def get_guid_string(id1: int, id2: int):
     id1, id2 = (id1 << 32), (id2 & 0xFFFFFFFF)
     id_int = id1 | id2
-    b = pack('q8x', id_int)
-    s = Struct('i2h8b')
+    b = pack('Q8x', id_int)
+    s = Struct('I2H8B')
     guid = s.pack((int(b[3]) << 24) | (int(b[2]) << 16) | (int(b[1]) << 8) | b[0],
                   ((int(b[5]) << 8) | b[4]),
                   (int(b[7]) << 8) | b[6],
