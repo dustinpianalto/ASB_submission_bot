@@ -112,3 +112,13 @@ def generate_dino_files(dino_data, directory):
                                                          int(dino['Dino Data']['DinoID2']))
         with open(f'{directory}/{filename}', 'w') as f:
             dino.write(f, space_around_delimiters=False)
+
+
+def generate_files(storage_dir, ctx, filename, game_ini, dinos_data, mods):
+    if not os.path.isdir(f'{storage_dir}/{ctx.author.id}'):
+        os.mkdir(f'{storage_dir}/{ctx.author.id}')
+    directory = f'{storage_dir}/{ctx.author.id}/{filename}_' \
+                f'{ctx.message.created_at.strftime("%Y%m%dT%H%M%S")}'
+    os.mkdir(directory)
+    generate_game_ini(game_ini, mods, directory)
+    generate_dino_files(dinos_data, directory)

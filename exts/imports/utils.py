@@ -82,3 +82,21 @@ async def run_command(args):
     stdout, stderr = await process.communicate()
     # Return stdout
     return stdout.decode().strip()
+
+
+async def git_add(loop, directory, file):
+    return await asyncio.wait_for(loop.create_task(run_command(f'git -C {directory} add {file}')), 120)
+
+
+async def git_commit(loop, directory, message):
+    return await asyncio.wait_for(loop.create_task(run_command(f'git -C {directory} commit -m {message}')), 120)
+
+
+async def git_push(loop, directory):
+    result = await asyncio.wait_for(loop.create_task(run_command(f'git -C {directory} push')), 240)
+    return result if 'error: failed' in result else 'Completed'
+
+
+async def git_pull(loop, directory):
+    result = await asyncio.wait_for(loop.create_task(run_command(f'git -C {directory} pull')), 240)
+    return result if 'CONFLICT' in result else 'Completed'
