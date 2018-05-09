@@ -10,6 +10,11 @@ class Uploader:
     async def upload_dino(self, ctx, official: str='unofficial'):
         if official == 'unofficial':
             pass
+        elif official == 'official':
+            pass
+        else:
+            await ctx.send(f'{official} is not a valid option. Please specify "official" or "unofficial" or leave it '
+                           f'blank to default to "unofficial"')
 
 
 def setup(bot):
