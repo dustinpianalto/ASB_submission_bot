@@ -12,11 +12,8 @@ class MissingFile(Exception):
     pass
 
 
-def open_zip(file: str) -> zipfile.ZipFile:
-    if file.endswith('.zip'):
-        return zipfile.ZipFile(file)
-    else:
-        raise FileNotFoundError('File name must end in .zip')
+def load_zip(file) -> zipfile.ZipFile:
+    return zipfile.ZipFile(file)
 
 
 def check_for_mods(game_file) -> list:
@@ -104,7 +101,7 @@ def generate_game_ini(game_config, mods, directory):
     print(game_config.sections())
     if mods:
         game_config['/script/shootergame.shootergamemode']['ModIDS'] = ', '.join(mods)
-    with open(f'{directory}Game.ini', 'w') as f:
+    with open(f'{directory}/Game.ini', 'w') as f:
         game_config.write(f, space_around_delimiters=False)
 
 
@@ -113,5 +110,5 @@ def generate_dino_files(dino_data, directory):
         print(filename)
         dino['Dino Data']['Guid'] = guid.get_guid_string(int(dino['Dino Data']['DinoID1']),
                                                          int(dino['Dino Data']['DinoID2']))
-        with open(f'{directory}{filename}', 'w') as f:
+        with open(f'{directory}/{filename}', 'w') as f:
             dino.write(f, space_around_delimiters=False)
