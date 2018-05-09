@@ -49,17 +49,20 @@ class Uploader:
                                                              game_ini, dinos_data, mods)
                                 await msg.edit(content='Processing... Files generated... Committing changes')
                                 await utils.git_add(self.bot.loop, storage_dir, '*')
-                                await utils.git_commit(self.bot.loop,
-                                                 storage_dir,
-                                                 f'Uploaded {len(dinos_data)} dinos {official}')
-                                await msg.edit(content='Processing... Committed... Pushing files to GitHub')
-                                push_status = await utils.git_push(self.bot.loop, storage_dir)
-                                if push_status == 'Completed':
-                                    await msg.edit(content=f'{ctx.author.mention} Upload complete.')
+                                if await utils.git_commit(self.bot.loop,
+                                                          storage_dir,
+                                                          f'"Uploaded {len(dinos_data)} dinos {official}"'):
+                                    await msg.edit(content='Processing... Committed... Pushing files to GitHub')
+                                    push_status = await utils.git_push(self.bot.loop, storage_dir)
+                                    if push_status == 'Completed':
+                                        await msg.edit(content=f'{ctx.author.mention} Upload complete.')
+                                    else:
+                                        await self.bot.get_user(owner_id).send(f'There was an error with git push'
+                                                                               f'\n{push_status}')
+                                        await msg.edit(content='There was an error pushing the files to GitHub\n'
+                                                               'Dusty.P has been notified and will get this fixed')
                                 else:
-                                    await self.bot.get_user(owner_id).send(f'There was an error with git push'
-                                                                           f'\n{push_status}')
-                                    await msg.edit(content='There was an error pushing the files to GitHub\n'
+                                    await msg.edit(content='There was an error committing the files\n'
                                                            'Dusty.P has been notified and will get this fixed')
                             else:
                                 await self.bot.get_user(owner_id).send(f'There was an error with git pull\n'

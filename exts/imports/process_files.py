@@ -122,3 +122,4 @@ def generate_files(storage_dir, ctx, filename, game_ini, dinos_data, mods):
     os.mkdir(directory)
     generate_game_ini(game_ini, mods, directory)
     generate_dino_files(dinos_data, directory)
+    return 1
