@@ -41,7 +41,7 @@ class Uploader:
                         directory = f'{storage_dir}/{ctx.author.id}/{attachment.filename}_' \
                                     f'{ctx.message.created_at.strftime("%Y%m%dT%H%M%S")}'
                         os.mkdir(directory)
-                        process_files.generate_game_ini(game_ini, directory, mods)
+                        process_files.generate_game_ini(game_ini, mods, directory)
                         process_files.generate_dino_files(dinos_data, directory)
                         await ctx.send('Upload complete.')
             else:
