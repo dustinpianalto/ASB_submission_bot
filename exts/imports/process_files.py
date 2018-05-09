@@ -44,22 +44,14 @@ def rename_section(cfg, sec, sec_new):
     return cfg
 
 
-def process_file(in_file, file_type) -> ConfigParser:
+def process_file(in_file, file_type, encoding) -> ConfigParser:
     with open(f'{config_dir}{bot_config_file}') as f:
         bot_config = json.load(f)
         ignore_strings = bot_config['ignore_strings'][file_type]
         keep_blocks = bot_config['keep_blocks'][file_type]
     lines = in_file.readlines()
-    data = [line.decode() for line in lines]
-    # try:
-    #     data = [line.decode(encoding='utf-8') for line in lines]
-    # except UnicodeDecodeError as e:
-    #     print(e)
-    #     try:
-    #         data = [line.decode(encoding='utf-16') for line in lines]
-    #     except UnicodeDecodeError as e:
-    #         print(e)
-    #         return 0
+    # data = [line.decode() for line in in_file]
+    data = [line.decode(encoding=encoding) for line in in_file]
     clean_data = list()
 
     if ignore_strings:
@@ -98,11 +90,11 @@ def process_files(z) -> (ConfigParser, ConfigParser, list):
             if filename.lower() == 'game.ini':
                 # Clean the Game.ini file, removing unnecessary lines
                 try:
-                    game_config = process_file(z.open(filename, encoding='utf-8'), 'game.ini')
+                    game_config = process_file(z.open(filename, encoding='utf-8'), 'game.ini', 'utf-8')
                 except UnicodeDecodeError as e:
                     print(e)
                     try:
-                        game_config = process_file(z.open(filename, encoding='utf-16-le'), 'game.ini')
+                        game_config = process_file(z.open(filename, encoding='utf-16-le'), 'game.ini', 'utf-16-le')
                     except UnicodeDecodeError as e:
                         print(e)
                         return 0, 0, 0
