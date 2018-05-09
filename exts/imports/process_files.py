@@ -49,9 +49,9 @@ def process_file(in_file, file_type, encoding) -> ConfigParser:
         bot_config = json.load(f)
         ignore_strings = bot_config['ignore_strings'][file_type]
         keep_blocks = bot_config['keep_blocks'][file_type]
-    lines = in_file.readlines()
+    data = in_file.readlines()
     # data = [line.decode() for line in in_file]
-    data = [line.decode(encoding=encoding) for line in in_file]
+    # data = [line.decode(encoding=encoding) for line in in_file]
     clean_data = list()
 
     if ignore_strings:
@@ -84,17 +84,20 @@ def process_files(z) -> (ConfigParser, ConfigParser, list):
     dino_data = dict()
     game_config = ConfigParser()
     mods = list()
-    for filename in z.namelist():
+    z.extractall(path='submissions_temp/tmp/')
+    for filename in os.listdir('submissions_temp/tmp/'):
         if filename.endswith('.ini'):
             # ignore any files that don't end with .ini
             if filename.lower() == 'game.ini':
                 # Clean the Game.ini file, removing unnecessary lines
                 try:
-                    game_config = process_file(z.open(filename, encoding='utf-8'), 'game.ini', 'utf-8')
+                    with open(filename, encoding='utf-8') as file:
+                        game_config = process_file(file, 'game.ini', 'utf-8')
                 except UnicodeDecodeError as e:
                     print(e)
                     try:
-                        game_config = process_file(z.open(filename, encoding='utf-16-le'), 'game.ini', 'utf-16-le')
+                        with open(filename, encoding='utf-16-le') as file:
+                            game_config = process_file(file, 'game.ini', 'utf-16-le')
                     except UnicodeDecodeError as e:
                         print(e)
                         return 0, 0, 0
@@ -102,11 +105,13 @@ def process_files(z) -> (ConfigParser, ConfigParser, list):
             elif 'DinoExport' in filename:
                 # Get the contents of all DinoExport_*.ini files loaded into a dict
                 try:
-                    dino_data[filename] = process_file(z.open(filename, encoding='utf-8'), 'dino.ini', 'utf-8')
+                    with open(filename, encoding='utf-8') as file:
+                        dino_data[filename] = process_file(file, 'dino.ini', 'utf-8')
                 except UnicodeDecodeError as e:
                     print(e)
                     try:
-                        dino_data[filename] = process_file(z.open(filename, encoding='utf-16-le'), 'dino.ini', 'utf-16-le')
+                        with open(filename, encoding='utf-16-le') as file:
+                            dino_data[filename] = process_file(file, 'dino.ini', 'utf-16-le')
                     except UnicodeDecodeError as e:
                         print(e)
                         return 0, 0, 0
