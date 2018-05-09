@@ -15,7 +15,7 @@ class Uploader:
     @commands.command(name='upload', aliases=['submit'])
     async def upload_dino(self, ctx, official: str='unofficial', singleplayer: bool=False):
         if ctx.message.attachments:
-            attachment = ctx.message.attachements[0]
+            attachment = ctx.message.attachments[0]
             if attachment.filename.endswith('.zip'):
                 with BytesIO() as file:
                     await attachment.save(file)
