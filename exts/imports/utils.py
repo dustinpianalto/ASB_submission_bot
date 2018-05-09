@@ -86,7 +86,8 @@ async def run_command(args):
 
 async def git_add(loop, directory, file):
     return await asyncio.wait_for(loop.create_task(run_command(f'git --git-dir={directory}/.git '
-                                                               f'--work-tree={directory} add {file}')), 120)
+                                                               f'--work-tree={directory} add '
+                                                               f'{directory}/{file}')), 120)
 
 
 async def git_commit(loop, directory, message):
