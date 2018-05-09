@@ -51,10 +51,10 @@ def process_file(in_file, file_type) -> ConfigParser:
         keep_blocks = bot_config['keep_blocks'][file_type]
     lines = in_file.readlines()
     try:
-        data = [line.decode('utf-8') for line in lines]
+        data = [line.decode(encoding='utf-8') for line in lines]
     except UnicodeDecodeError:
         try:
-            data = [line.decode('utf-16') for line in lines]
+            data = [line.decode(encoding='utf-16') for line in lines]
         except UnicodeDecodeError:
             return 0
     clean_data = list()

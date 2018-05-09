@@ -25,7 +25,7 @@ class Uploader:
                         unzipped = process_files.load_zip(file)
                         game_ini, dinos_data, mods = process_files.process_files(unzipped)
                         if not game_ini and not dinos_data and not mods:
-                            await msg.edit(content='There was an encoding error with one of the files provided'
+                            await msg.edit(content='There was an encoding error with one of the files provided '
                                                    'and they cannot be processed')
                             return
                         if dinos_data == dict():
