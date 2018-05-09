@@ -49,7 +49,8 @@ def process_file(in_file, file_type) -> ConfigParser:
         bot_config = json.load(f)
         ignore_strings = bot_config['ignore_strings'][file_type]
         keep_blocks = bot_config['keep_blocks'][file_type]
-    data = in_file.readlines()
+    lines = in_file.readlines()
+    data = [line.decode() for line in lines]
     # try:
     #     data = [line.decode(encoding='utf-8') for line in lines]
     # except UnicodeDecodeError as e:
