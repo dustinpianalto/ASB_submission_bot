@@ -41,18 +41,18 @@ class Uploader:
                                 await msg.edit(content=f'{official} is not a valid option. Please specify "official" '
                                                        f'or "unofficial" or leave it blank to default to "unofficial"')
                                 return
-                            await msg.edit('Processing... Syncing with GitHub')
+                            await msg.edit(content='Processing... Syncing with GitHub')
                             pull_status = utils.git_pull(self.bot.loop, storage_dir)
                             if pull_status == 'Completed':
-                                await msg.edit('Processing... Sync complete... Generating new files')
+                                await msg.edit(content='Processing... Sync complete... Generating new files')
                                 process_files.generate_files(storage_dir, ctx, attachment.filename,
                                                              game_ini, dinos_data, mods)
-                                await msg.edit('Processing... Files generated... Committing changes')
+                                await msg.edit(content='Processing... Files generated... Committing changes')
                                 utils.git_add(self.bot.loop, storage_dir, '*')
                                 utils.git_commit(self.bot.loop,
                                                  storage_dir,
                                                  f'Uploaded {len(dinos_data)} dinos {official}')
-                                await msg.edit('Processing... Committed... Pushing files to GitHub')
+                                await msg.edit(content='Processing... Committed... Pushing files to GitHub')
                                 push_status = utils.git_push(self.bot.loop, storage_dir)
                                 if push_status == 'Completed':
                                     await msg.edit(content=f'{ctx.author.mention} Upload complete.')
