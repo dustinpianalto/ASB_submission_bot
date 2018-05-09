@@ -101,9 +101,15 @@ def process_files(z) -> (ConfigParser, ConfigParser, list):
                 mods = check_for_mods(z.open(filename))
             elif 'DinoExport' in filename:
                 # Get the contents of all DinoExport_*.ini files loaded into a dict
-                dino_data[filename] = process_file(z.open(filename), 'dino.ini')
-                if not dino_data[filename]:
-                    return 0, 0, 0
+                try:
+                    dino_data[filename] = process_file(z.open(filename, encoding='utf-8'), 'dino.ini', 'utf-8')
+                except UnicodeDecodeError as e:
+                    print(e)
+                    try:
+                        dino_data[filename] = process_file(z.open(filename, encoding='utf-16-le'), 'dino.ini', 'utf-16-le')
+                    except UnicodeDecodeError as e:
+                        print(e)
+                        return 0, 0, 0
     if not mods:
         mods = check_for_modded_dinos(dino_data, mods)
     return game_config, dino_data, mods
