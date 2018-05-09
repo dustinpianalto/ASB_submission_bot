@@ -49,7 +49,14 @@ def process_file(in_file, file_type) -> ConfigParser:
         bot_config = json.load(f)
         ignore_strings = bot_config['ignore_strings'][file_type]
         keep_blocks = bot_config['keep_blocks'][file_type]
-    data = list(map(bytes.decode, in_file.readlines()))
+    lines = in_file.readlines()
+    try:
+        data = [line.decode('utf-8') for line in lines]
+    except UnicodeDecodeError:
+        try:
+            data = [line.decode('utf-16') for line in lines]
+        except UnicodeDecodeError:
+            return 0
     clean_data = list()
 
     if ignore_strings:
@@ -88,10 +95,14 @@ def process_files(z) -> (ConfigParser, ConfigParser, list):
             if filename.lower() == 'game.ini':
                 # Clean the Game.ini file, removing unnecessary lines
                 game_config = process_file(z.open(filename), 'game.ini')
+                if not game_config:
+                    return 0, 0, 0
                 mods = check_for_mods(z.open(filename))
             elif 'DinoExport' in filename:
                 # Get the contents of all DinoExport_*.ini files loaded into a dict
                 dino_data[filename] = process_file(z.open(filename), 'dino.ini')
+                if not dino_data[filename]:
+                    return 0, 0, 0
     if not mods:
         mods = check_for_modded_dinos(dino_data, mods)
     return game_config, dino_data, mods
