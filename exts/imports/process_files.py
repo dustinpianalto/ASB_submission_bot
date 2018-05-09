@@ -52,10 +52,12 @@ def process_file(in_file, file_type) -> ConfigParser:
     lines = in_file.readlines()
     try:
         data = [line.decode(encoding='utf-8') for line in lines]
-    except UnicodeDecodeError:
+    except UnicodeDecodeError as e:
+        print(e)
         try:
             data = [line.decode(encoding='utf-16') for line in lines]
-        except UnicodeDecodeError:
+        except UnicodeDecodeError as e:
+            print(e)
             return 0
     clean_data = list()
 
