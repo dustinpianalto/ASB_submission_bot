@@ -85,18 +85,22 @@ async def run_command(args):
 
 
 async def git_add(loop, directory, file):
-    return await asyncio.wait_for(loop.create_task(run_command(f'git -C {directory} add {directory}/{file}')), 120)
+    return await asyncio.wait_for(loop.create_task(run_command(f'git --git-dir={directory}/.git '
+                                                               f'--work-tree={directory} add {file}')), 120)
 
 
 async def git_commit(loop, directory, message):
-    return await asyncio.wait_for(loop.create_task(run_command(f'git -C {directory} commit -m {message}')), 120)
+    return await asyncio.wait_for(loop.create_task(run_command(f'git --git-dir={directory}/.git '
+                                                               f'--work-tree={directory} commit -m {message}')), 120)
 
 
 async def git_push(loop, directory):
-    result = await asyncio.wait_for(loop.create_task(run_command(f'git -C {directory} push')), 240)
+    result = await asyncio.wait_for(loop.create_task(run_command(f'git --git-dir={directory}/.git '
+                                                                 f'--work-tree={directory} push')), 240)
     return result if 'error: failed' in result else 'Completed'
 
 
 async def git_pull(loop, directory):
-    result = await asyncio.wait_for(loop.create_task(run_command(f'git -C {directory} pull')), 240)
+    result = await asyncio.wait_for(loop.create_task(run_command(f'git --git-dir={directory}/.git '
+                                                                 f'--work-tree={directory} pull')), 240)
     return result if 'CONFLICT' in result else 'Completed'
