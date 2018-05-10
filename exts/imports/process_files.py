@@ -45,7 +45,7 @@ def rename_section(cfg, sec, sec_new):
     return cfg
 
 
-def process_file(in_file, file_type, encoding) -> ConfigParser:
+def process_file(in_file, file_type) -> ConfigParser:
     with open(f'{config_dir}{bot_config_file}') as f:
         bot_config = json.load(f)
         ignore_strings = bot_config['ignore_strings'][file_type]
@@ -111,6 +111,7 @@ def process_files(z) -> (ConfigParser, ConfigParser, list):
                         return 0, 0, 0
             elif 'DinoExport' in filename:
                 # Get the contents of all DinoExport_*.ini files loaded into a dict
+                print(filename)
                 try:
                     with open(f'{path}{filename}', encoding='utf-8') as file:
                         dino_data[filename] = process_file(file, 'dino.ini', 'utf-8')
