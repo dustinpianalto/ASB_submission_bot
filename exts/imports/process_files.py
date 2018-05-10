@@ -88,7 +88,8 @@ def process_files(z) -> (ConfigParser, ConfigParser, list):
     mods = list()
     path = 'submissions_temp/tmp/'
     z.extractall(path=path)
-    for filename in os.listdir(path):
+    files = os.listdir(path)
+    for filename in files:
         if filename.endswith('.ini'):
             # ignore any files that don't end with .ini
             if filename.lower() == 'game.ini':
