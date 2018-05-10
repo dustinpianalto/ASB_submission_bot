@@ -23,8 +23,8 @@ class Uploader:
                 async with ctx.typing():
                     if not os.path.isdir(f'{storage_dir}/orig/'):
                         os.mkdir(f'{storage_dir}/orig/')
-                    with open(f'{storage_dir}/orig/{attachment.filename}_'
-                              f'{ctx.message.created_at.strftime("%Y%m%dT%H%M%S")}', 'wb') as file:
+                    with open(f'{storage_dir}/orig/{attachment.filename.replace(".zip", "")}_'
+                              f'{ctx.message.created_at.strftime("%Y%m%dT%H%M%S")}.zip', 'wb') as file:
                         await attachment.save(file)
                     with BytesIO() as file:
                         await attachment.save(file)
