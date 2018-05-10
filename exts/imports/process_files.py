@@ -127,7 +127,7 @@ def process_files(z) -> (ConfigParser, ConfigParser, list):
                     except UnicodeDecodeError as e:
                         print(e)
                         return 0, 0, 0
-    # rmtree('submissions_temp/tmp')
+    rmtree('submissions_temp/tmp')
     if not mods:
         mods = check_for_modded_dinos(dino_data, mods)
     return game_config, dino_data, mods
