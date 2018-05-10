@@ -103,6 +103,8 @@ class Uploader:
                                     msg = await ctx.send(f'Is this from SinglePlayer or a server?\n'
                                                          f"select {self.bot.unicode_emojis['y']} for SP or "
                                                          f"{self.bot.unicode_emojis['x']} for server.")
+                                    await msg.add_reaction(self.bot.unicode_emojis["y"])
+                                    await msg.add_reaction(self.bot.unicode_emojis["x"])
 
                                     def echeck(reaction, user):
                                         return user == ctx.author and str(reaction.emoji) \
