@@ -34,13 +34,14 @@ class Uploader:
                                            'Please make sure the files have not been renamed.')
                         else:
                             if official == 'unofficial' and game_ini == ConfigParser():
-                                await msg.edit(content=f'{ctx.author.mention} Game.ini is missing or is not valid.\n'
-                                                       f'Select {self.bot.unicode_emojis["o"]} to process as Official\n'
-                                                       f'Select {self.bot.unicode_emojis["y"]} if you would like to '
-                                                       f'provide Game.ini separately.\n'
-                                                       f'Select {self.bot.unicode_emojis["x"]} to cancel your upload\n'
-                                                       f'Please wait until all reactions are loaded before making '
-                                                       f'your selection')
+                                await msg.delete()
+                                msg = await ctx.send(f'{ctx.author.mention} Game.ini is missing or is not valid.\n'
+                                                     f'Select {self.bot.unicode_emojis["o"]} to process as Official\n'
+                                                     f'Select {self.bot.unicode_emojis["y"]} if you would like to '
+                                                     f'provide Game.ini separately.\n'
+                                                     f'Select {self.bot.unicode_emojis["x"]} to cancel your upload\n'
+                                                     f'Please wait until all reactions are loaded before making '
+                                                     f'your selection')
                                 await msg.add_reaction(self.bot.unicode_emojis["o"])
                                 await msg.add_reaction(self.bot.unicode_emojis["y"])
                                 await msg.add_reaction(self.bot.unicode_emojis["x"])
@@ -98,9 +99,10 @@ class Uploader:
 
                             if official == 'official' and game_ini == ConfigParser():
                                 if not singleplayer:
-                                    await msg.edit(content=f'Is this from SinglePlayer or a server?\n'
-                                                           f"select {self.bot.unicode_emojis['y']} for SP or "
-                                                           f"{self.bot.unicode_emojis['x']} for server.")
+                                    await msg.delete()
+                                    msg = await ctx.send(f'Is this from SinglePlayer or a server?\n'
+                                                         f"select {self.bot.unicode_emojis['y']} for SP or "
+                                                         f"{self.bot.unicode_emojis['x']} for server.")
 
                                     def echeck(reaction, user):
                                         return user == ctx.author and str(reaction.emoji) \
@@ -155,7 +157,9 @@ class Uploader:
                                     await msg.edit(content='Processing... Committed... Pushing files to GitHub')
                                     push_status = await utils.git_push(self.bot.loop, storage_dir)
                                     if push_status == 'Completed':
-                                        await msg.edit(content=f'{ctx.author.mention} Upload complete.')
+                                        await msg.delete()
+                                        msg = await ctx.send(f'{ctx.author.mention} Upload complete.\n'
+                                                             f'Uploaded {len(dinos_data)} dinos as {official}')
                                     else:
                                         await self.bot.get_user(owner_id).send(f'There was an error with git push'
                                                                                f'\n{push_status}')
