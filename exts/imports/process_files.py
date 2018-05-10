@@ -78,6 +78,7 @@ def process_file(in_file, file_type, encoding) -> ConfigParser:
             config = rename_section(config, section, section.title())
         else:
             config.remove_section(section)
+    print(config.sections())
     return config
 
 
@@ -124,7 +125,6 @@ def process_files(z) -> (ConfigParser, ConfigParser, list):
                     except UnicodeDecodeError as e:
                         print(e)
                         return 0, 0, 0
-    print([dino.sections() for key, dino in dino_data.values()])
     rmtree('submissions_temp/tmp')
     if not mods:
         mods = check_for_modded_dinos(dino_data, mods)
