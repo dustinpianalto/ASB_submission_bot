@@ -121,7 +121,7 @@ def process_files(z) -> (ConfigParser, ConfigParser, list):
                         with open(f'{path}{filename}', 'rb') as file:
                             contents = file.read()
                             with open(f'{path}utf8{filename}', 'wb') as f:
-                                f.write(contents.decode('utf-16-le').encode('utf-8'))
+                                f.write(contents.decode('utf-16-le').replace('\uFEFF', '').encode('utf-8'))
                         with open(f'{path}utf8{filename}', encoding='utf-8') as file:
                             dino_data[filename] = process_file(file, 'dino.ini')
                     except UnicodeDecodeError as e:
