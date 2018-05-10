@@ -161,7 +161,8 @@ class Uploader:
                                     if push_status == 'Completed':
                                         await msg.delete()
                                         msg = await ctx.send(f'{ctx.author.mention} Upload complete.\n'
-                                                             f'Uploaded {len(dinos_data)} dinos as {official}')
+                                                             f'Uploaded {len(dinos_data)} dinos as {official} '
+                                                             f'{"singleplayer" if singleplayer else "server"}')
                                     else:
                                         await self.bot.get_user(owner_id).send(f'There was an error with git push'
                                                                                f'\n{push_status}')
