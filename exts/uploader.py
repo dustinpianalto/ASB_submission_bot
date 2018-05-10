@@ -60,6 +60,7 @@ class Uploader:
                                     try:
                                         await msg.clear_reactions()
                                     except (discord.Forbidden, discord.HTTPException):
+                                        print('clear_reactions failed.')
                                         pass
                                     if str(reaction.emoji) == self.bot.unicode_emojis["o"]:
                                         await msg.edit(content="You chose to process as official.")
@@ -117,6 +118,7 @@ class Uploader:
                                         try:
                                             await msg.clear_reactions()
                                         except (discord.Forbidden, discord.HTTPException):
+                                            print('clear_reactions failed.')
                                             pass
                                         if str(reaction.emoji) == self.bot.unicode_emojis["y"]:
                                             await msg.edit(content="You selected SinglePlayer.")
