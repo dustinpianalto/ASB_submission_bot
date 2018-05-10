@@ -49,9 +49,9 @@ def process_file(in_file, file_type, encoding) -> ConfigParser:
         bot_config = json.load(f)
         ignore_strings = bot_config['ignore_strings'][file_type]
         keep_blocks = bot_config['keep_blocks'][file_type]
-    data = in_file.readlines()
+    # data = in_file.readlines()
     # data = [line.decode() for line in in_file]
-    # data = [line.decode(encoding=encoding) for line in in_file]
+    data = [line.decode(encoding=encoding) for line in in_file]
     clean_data = list()
 
     if ignore_strings:
