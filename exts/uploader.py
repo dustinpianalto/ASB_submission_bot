@@ -1,4 +1,5 @@
 import asyncio
+import discord
 from discord.ext import commands
 from io import BytesIO
 from .imports import process_files, utils
@@ -56,6 +57,10 @@ class Uploader:
                                                            f'Canceling request due to timeout.')
                                     return
                                 else:
+                                    try:
+                                        await msg.clear_reactions()
+                                    except (discord.Forbidden, discord.HTTPException):
+                                        pass
                                     if str(reaction.emoji) == self.bot.unicode_emojis["o"]:
                                         await msg.edit(content="You chose to process as official.")
                                         await asyncio.sleep(4.0)
@@ -87,7 +92,7 @@ class Uploader:
                                                 game_msg.attachments[0].save(f)
                                                 game_ini = process_files.process_file(f, 'game.ini')
                                     elif str(reaction.emoji) == self.bot.unicode_emojis['x']:
-                                        await msg.edit('Your request has been canceled.')
+                                        await msg.edit(content='Your request has been canceled.')
                                         return
 
                             if official == 'official' and game_ini == ConfigParser():
@@ -109,6 +114,10 @@ class Uploader:
                                                     f'Canceling request due to timeout.')
                                         return
                                     else:
+                                        try:
+                                            await msg.clear_reactions()
+                                        except (discord.Forbidden, discord.HTTPException):
+                                            pass
                                         if str(reaction.emoji) == self.bot.unicode_emojis["y"]:
                                             await msg.edit(content="You selected SinglePlayer.")
                                             await asyncio.sleep(4.0)
