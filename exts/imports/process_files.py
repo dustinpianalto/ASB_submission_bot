@@ -49,9 +49,9 @@ def process_file(in_file, file_type, encoding) -> ConfigParser:
         bot_config = json.load(f)
         ignore_strings = bot_config['ignore_strings'][file_type]
         keep_blocks = bot_config['keep_blocks'][file_type]
-    # data = in_file.readlines()
+    data = in_file.readlines()
     # data = [line.decode() for line in in_file]
-    data = [line.decode(encoding=encoding) for line in in_file]
+    # data = [line.decode(encoding=encoding) for line in in_file]
     clean_data = list()
 
     if ignore_strings:
@@ -98,7 +98,10 @@ def process_files(z) -> (ConfigParser, ConfigParser, list):
                 except UnicodeDecodeError as e:
                     print(e)
                     try:
-                        with open(f'{path}{filename}', encoding='utf-16-le') as file:
+                        with open(f'{path}{filename}', 'w+b') as file:
+                            contents = file.read()
+                            file.write(contents.decode('utf-16-le').encode('utf-8'))
+                        with open(f'{path}{filename}', encoding='utf-8') as file:
                             game_config = process_file(file, 'game.ini', 'utf-16-le')
                             mods = check_for_mods(file)
                     except UnicodeDecodeError as e:
@@ -112,7 +115,10 @@ def process_files(z) -> (ConfigParser, ConfigParser, list):
                 except UnicodeDecodeError as e:
                     print(e)
                     try:
-                        with open(f'{path}{filename}', encoding='utf-16-le') as file:
+                        with open(f'{path}{filename}', 'w+b') as file:
+                            contents = file.read()
+                            file.write(contents.decode('utf-16-le').encode('utf-8'))
+                        with open(f'{path}{filename}', encoding='utf-8') as file:
                             dino_data[filename] = process_file(file, 'dino.ini', 'utf-16-le')
                     except UnicodeDecodeError as e:
                         print(e)
