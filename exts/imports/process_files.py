@@ -84,33 +84,35 @@ def process_files(z) -> (ConfigParser, ConfigParser, list):
     dino_data = dict()
     game_config = ConfigParser()
     mods = list()
-    z.extractall(path='submissions_temp/tmp/')
-    for filename in os.listdir('submissions_temp/tmp/'):
+    path = 'submissions_temp/tmp/'
+    z.extractall(path=path)
+    for filename in os.listdir(path):
         if filename.endswith('.ini'):
             # ignore any files that don't end with .ini
             if filename.lower() == 'game.ini':
                 # Clean the Game.ini file, removing unnecessary lines
                 try:
-                    with open(filename, encoding='utf-8') as file:
+                    with open(f'{path}{filename}', encoding='utf-8') as file:
                         game_config = process_file(file, 'game.ini', 'utf-8')
+                        mods = check_for_mods(file)
                 except UnicodeDecodeError as e:
                     print(e)
                     try:
-                        with open(filename, encoding='utf-16-le') as file:
+                        with open(f'{path}{filename}', encoding='utf-16-le') as file:
                             game_config = process_file(file, 'game.ini', 'utf-16-le')
+                            mods = check_for_mods(file)
                     except UnicodeDecodeError as e:
                         print(e)
                         return 0, 0, 0
-                mods = check_for_mods(z.open(filename))
             elif 'DinoExport' in filename:
                 # Get the contents of all DinoExport_*.ini files loaded into a dict
                 try:
-                    with open(filename, encoding='utf-8') as file:
+                    with open(f'{path}{filename}', encoding='utf-8') as file:
                         dino_data[filename] = process_file(file, 'dino.ini', 'utf-8')
                 except UnicodeDecodeError as e:
                     print(e)
                     try:
-                        with open(filename, encoding='utf-16-le') as file:
+                        with open(f'{path}{filename}', encoding='utf-16-le') as file:
                             dino_data[filename] = process_file(file, 'dino.ini', 'utf-16-le')
                     except UnicodeDecodeError as e:
                         print(e)
