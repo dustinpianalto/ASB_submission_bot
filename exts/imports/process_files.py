@@ -3,6 +3,7 @@ import os
 import json
 from configparser import ConfigParser
 from . import guid
+from shutil import rmtree
 
 config_dir = 'config/'
 bot_config_file = 'bot_config.json'
@@ -123,7 +124,7 @@ def process_files(z) -> (ConfigParser, ConfigParser, list):
                     except UnicodeDecodeError as e:
                         print(e)
                         return 0, 0, 0
-    os.rmdir('submissions_temp/tmp')
+    rmtree('submissions_temp/tmp')
     if not mods:
         mods = check_for_modded_dinos(dino_data, mods)
     return game_config, dino_data, mods
