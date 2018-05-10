@@ -45,6 +45,13 @@ def rename_section(cfg, sec, sec_new):
     return cfg
 
 
+def get_server_guid(server_file):
+    server_file = server_file.encode()
+    # p = s.pack((int.from_bytes(hash.encode(), byteorder='little') >> 64) & max_int,
+    #            int.from_bytes(hash.encode(), byteorder='little') & max_int)
+
+
+
 def process_file(in_file, file_type) -> ConfigParser:
     with open(f'{config_dir}{bot_config_file}') as f:
         bot_config = json.load(f)
@@ -97,19 +104,27 @@ def process_files(z) -> (ConfigParser, ConfigParser, list):
                 try:
                     with open(f'{path}{filename}', encoding='utf-8') as file:
                         game_config = process_file(file, 'game.ini')
+                        file.seek(0)
                         mods = check_for_mods(file)
+                        file.seek(0)
+                        server_file = file.read()
                 except UnicodeDecodeError as e:
                     print(e)
                     try:
-                        with open(f'{path}{filename}', 'w+b') as file:
+                        with open(f'{path}{filename}', 'rb') as file:
                             contents = file.read()
-                            file.write(contents.decode('utf-16-le').encode('utf-8'))
-                        with open(f'{path}{filename}', encoding='utf-8') as file:
+                            with open(f'{path}utf8{filename}', 'wb') as f:
+                                f.write(contents.decode('utf-16-le').replace('\uFEFF', '').encode('utf-8'))
+                        with open(f'{path}utf8{filename}', encoding='utf-8') as file:
                             game_config = process_file(file, 'game.ini')
+                            file.seek(0)
                             mods = check_for_mods(file)
+                            file.seek(0)
+                            server_file = file.read()
                     except UnicodeDecodeError as e:
                         print(e)
                         return 0, 0, 0
+                server_guid = get_server_guid(server_file)
             elif 'DinoExport' in filename:
                 # Get the contents of all DinoExport_*.ini files loaded into a dict
                 print(filename)
