@@ -21,6 +21,8 @@ class Uploader:
             attachment = ctx.message.attachments[0]
             if attachment.filename.endswith('.zip'):
                 async with ctx.typing():
+                    if not os.path.isdir(f'{storage_dir}/orig/'):
+                        os.mkdir(f'{storage_dir}/orig/')
                     with open(f'{storage_dir}/orig/{attachment.filename}', 'wb') as file:
                         attachment.save(file)
                     with BytesIO() as file:
