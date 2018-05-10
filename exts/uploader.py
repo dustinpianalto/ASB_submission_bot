@@ -137,7 +137,7 @@ class Uploader:
                                     game_ini.add_section('/script/shootergame.shootergamemode')
                                     game_ini.set('/script/shootergame.shootergamemode',
                                                  'bUseSingleplayerSettings',
-                                                 True)
+                                                 "True")
 
                             if official not in ['official', 'unofficial']:
                                 await msg.edit(content=f'{ctx.author.mention} {official} is not a valid option.\n'
