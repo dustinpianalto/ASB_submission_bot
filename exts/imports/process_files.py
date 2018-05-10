@@ -154,7 +154,7 @@ def generate_dino_files(dino_data, directory):
 def generate_files(storage_dir, ctx, filename, game_ini, dinos_data, mods):
     if not os.path.isdir(f'{storage_dir}/{ctx.author.id}'):
         os.mkdir(f'{storage_dir}/{ctx.author.id}')
-    directory = f'{storage_dir}/{ctx.author.id}/{filename}_' \
+    directory = f'{storage_dir}/{ctx.author.id}/{filename.replace(".zip", "")}_' \
                 f'{ctx.message.created_at.strftime("%Y%m%dT%H%M%S")}'
     os.mkdir(directory)
     generate_game_ini(game_ini, mods, directory)
