@@ -14,7 +14,7 @@ class Guid:
         else:
             self.guid = (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 
-    def get_guid(self, args) -> tuple:
+    def get_guid(self, args) -> None:
         s = Struct('i2h8B')
         if len(args) == 1 and isinstance(args[0], bytes) and len(args[0]) == 16:
             b = args[0]
@@ -39,6 +39,8 @@ class Guid:
                 b = pack('Q8x', id_int)
             elif all((self.bytes_needed(arg) <= 64) for arg in args):
                 b = pack('QQ', args[0], args[1])
+            else:
+                raise TypeError('Arguments don\'t match any allowed configuration')
             guid = s.pack((int(b[3]) << 24) | (int(b[2]) << 16) | (int(b[1]) << 8) | b[0],
                           ((int(b[5]) << 8) | b[4]),
                           (int(b[7]) << 8) | b[6],
