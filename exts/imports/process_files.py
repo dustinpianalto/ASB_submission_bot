@@ -2,7 +2,7 @@ import zipfile
 import os
 import json
 from configparser import ConfigParser
-from . import guid
+from .guid import Guid
 from shutil import rmtree
 
 config_dir = 'config/'
@@ -145,8 +145,8 @@ def generate_game_ini(game_config, mods, directory):
 def generate_dino_files(dino_data, directory):
     for filename, dino in dino_data.items():
         print(filename)
-        dino['Dino Data']['Guid'] = guid.get_guid_string(int(dino['Dino Data']['DinoID1']),
-                                                         int(dino['Dino Data']['DinoID2']))
+        guid = Guid(int(dino['Dino Data']['DinoID1']), int(dino['Dino Data']['DinoID2']))
+        dino['Dino Data']['Guid'] = str(guid)
         with open(f'{directory}/{filename}', 'w') as f:
             dino.write(f, space_around_delimiters=False)
 
