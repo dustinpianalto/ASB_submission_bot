@@ -5,6 +5,7 @@ from io import BytesIO
 from .imports import process_files, utils
 from configparser import ConfigParser
 import os
+from .imports.guid import Guid
 
 storage_dir = '../ASB_dino_submissions'
 owner_id = 351794468870946827
@@ -29,7 +30,7 @@ class Uploader:
                     with BytesIO() as file:
                         await attachment.save(file)
                         unzipped = process_files.load_zip(file)
-                        game_ini, dinos_data, mods = process_files.process_files(unzipped)
+                        game_ini, dinos_data, mods, server_guid = process_files.process_files(unzipped)
                         if not game_ini and not dinos_data and not mods:
                             await msg.edit(content='There was an encoding error with one of the files provided '
                                                    'and they cannot be processed')
@@ -72,6 +73,7 @@ class Uploader:
                                         await msg.edit(content="You chose to process as official.")
                                         await asyncio.sleep(4.0)
                                         official = 'official'
+                                        server_guid = Guid(b'officialserver00')
                                     elif str(reaction.emoji) == self.bot.unicode_emojis["y"]:
                                         await msg.edit(content="You chose to provide the Game.ini file.\n"
                                                                "I will wait for 5 minutes for you to send a message "
@@ -98,6 +100,8 @@ class Uploader:
                                             with BytesIO() as f:
                                                 game_msg.attachments[0].save(f)
                                                 game_ini = process_files.process_file(f, 'game.ini')
+                                                f.seek(0)
+                                                server_guid = process_files.get_server_guid(f.read())
                                     elif str(reaction.emoji) == self.bot.unicode_emojis['x']:
                                         await msg.edit(content='Your request has been canceled.')
                                         return
@@ -133,10 +137,12 @@ class Uploader:
                                             await msg.edit(content="You selected SinglePlayer.")
                                             await asyncio.sleep(4.0)
                                             singleplayer = True
+                                            server_guid = Guid(b'officialsinglepl')
                                         elif str(reaction.emoji) == self.bot.unicode_emojis["x"]:
                                             await msg.edit(content="You selected Server.")
                                             await asyncio.sleep(4.0)
                                             singleplayer = False
+                                            server_guid = Guid(b'officialserver00')
 
                                 if singleplayer:
                                     game_ini.add_section('/script/shootergame.shootergamemode')
@@ -154,7 +160,7 @@ class Uploader:
                             pull_status = await utils.git_pull(self.bot.loop, storage_dir)
                             if pull_status == 'Completed':
                                 await msg.edit(content='Processing... Sync complete... Generating new files')
-                                process_files.generate_files(storage_dir, ctx, attachment.filename,
+                                process_files.generate_files(storage_dir, ctx, server_guid,
                                                              game_ini, dinos_data, mods)
                                 await msg.edit(content='Processing... Files generated... Committing changes')
                                 await utils.git_add(self.bot.loop, storage_dir, '*')
@@ -180,7 +186,7 @@ class Uploader:
                             else:
                                 await self.bot.get_user(owner_id).send(f'There was an error with git pull\n'
                                                                        f'{pull_status}')
-                                process_files.generate_files('submissions_temp', ctx, attachment.filename,
+                                process_files.generate_files('submissions_temp', ctx, server_guid,
                                                              game_ini, dinos_data, mods)
                                 await msg.edit(content='Could not sync with GitHub.\n'
                                                        'Dusty.P has been notified and your files are stored in a '

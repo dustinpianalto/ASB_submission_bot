@@ -1,13 +1,43 @@
+"""
+Implementation of C# System.Guid
+
+References:
+    https://referencesource.microsoft.com/#mscorlib/system/guid.cs
+
+    # TODO Add License
+"""
+
 from struct import Struct, pack
 from math import log
 
-# 16 bytes, 11 arguments
+# Constants for masking bytes
 MAXINT64 = 0xFFFFFFFFFFFFFFFF
+MAXINT16 = 0xFFFF
 MAXINT8 = 0xFF
 
 
 class Guid:
+    """
+    A Global Unique Identifier (Guid) based on the one provided in C#'s System package
+
+    The Guid is stored as a tuple of length 11 for easy processing and comparisons
+
+    Attributes:
+        guid (tuple): A tuple containing the guid
+    """
     def __init__(self, *args):
+        """
+        Initialize the Guid
+
+        Arguments:
+            Union[int, str, bytes, short(int will be masked to short)]:
+                The arguments can be in any of the following formats:
+                (bytes(len 16))
+                (int(len <= 4), short, short, bytes(len 8))
+                (int(len <= 8), int(len <= 8))
+                (int(len <= 16))
+                (str) - str must be formatted 00000000-0000-0000-0000-000000000000
+        """
         # Guid will be stored as a tuple len 11
         if bool(args):
             self.get_guid(args)
@@ -24,13 +54,9 @@ class Guid:
                           *b[8:16]
                           )
             self.guid = s.unpack(guid)
-        elif len(args) == 11 and all(isinstance(arg, int) for arg in args[0:3]) \
-                and all(isinstance(arg, bytes) for arg in args[3:]) and all(len(arg) == 1 for arg in args[3:]):
-            guid = s.pack(*args)
-            self.guid = s.unpack(guid)
         elif len(args) == 4 and all(isinstance(arg, int) for arg in args[0:3]) \
                 and isinstance(args[3], bytes) and len(args[3]) == 8:
-            guid = s.pack(args[0], args[1], args[2], *args[3])
+            guid = s.pack(args[0], args[1] & MAXINT16, args[2] & MAXINT16, *args[3])
             self.guid = s.unpack(guid)
         elif len(args) == 2 and all(isinstance(arg, int) for arg in args):
             if all((self.bytes_needed(arg) <= 4) for arg in args):

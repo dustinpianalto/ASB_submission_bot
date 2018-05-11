@@ -4,6 +4,7 @@ import json
 from configparser import ConfigParser
 from .guid import Guid
 from shutil import rmtree
+from hashlib import md5
 
 config_dir = 'config/'
 bot_config_file = 'bot_config.json'
@@ -47,7 +48,9 @@ def rename_section(cfg, sec, sec_new):
 
 def get_server_guid(server_file):
     server_file = server_file.encode()
-
+    m = md5(server_file).hexdigest().encode()
+    guid = Guid(int(m.hex()))
+    return guid
 
 
 def process_file(in_file, file_type) -> ConfigParser:
@@ -87,9 +90,10 @@ def process_file(in_file, file_type) -> ConfigParser:
     return config
 
 
-def process_files(z) -> (ConfigParser, ConfigParser, list):
+def process_files(z) -> (ConfigParser, ConfigParser, list, Guid):
     dino_data = dict()
     game_config = ConfigParser()
+    server_guid = Guid()
     mods = list()
     path = 'submissions_temp/tmp/'
     z.extractall(path=path)
@@ -144,7 +148,7 @@ def process_files(z) -> (ConfigParser, ConfigParser, list):
     rmtree('submissions_temp/tmp')
     if not mods:
         mods = check_for_modded_dinos(dino_data, mods)
-    return game_config, dino_data, mods
+    return game_config, dino_data, mods, server_guid
 
 
 def generate_game_ini(game_config, mods, directory):
@@ -164,12 +168,12 @@ def generate_dino_files(dino_data, directory):
             dino.write(f, space_around_delimiters=False)
 
 
-def generate_files(storage_dir, ctx, filename, game_ini, dinos_data, mods):
+def generate_files(storage_dir, ctx, dirname, game_ini, dinos_data, mods):
     if not os.path.isdir(f'{storage_dir}/{ctx.author.id}'):
         os.mkdir(f'{storage_dir}/{ctx.author.id}')
-    directory = f'{storage_dir}/{ctx.author.id}/{filename.replace(".zip", "")}_' \
-                f'{ctx.message.created_at.strftime("%Y%m%dT%H%M%S")}'
-    os.mkdir(directory)
+    directory = f'{storage_dir}/{ctx.author.id}/{dirname}'
+    if not os.path.isdir(directory):
+        os.mkdir(directory)
     generate_game_ini(game_ini, mods, directory)
     generate_dino_files(dinos_data, directory)
     return 1
