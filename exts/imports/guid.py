@@ -1,6 +1,7 @@
 from struct import Struct, pack
 from math import log
 
+# 0012d687-d687-0012-0000-000000000000
 # 16 bytes, 11 arguments
 MAXINT64 = 0xFFFFFFFFFFFFFFFF
 MAXINT8 = 0xFF
@@ -15,7 +16,7 @@ class Guid:
             self.guid = (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 
     def get_guid(self, args) -> None:
-        s = Struct('i2h8B')
+        s = Struct('I2H8B')
         if len(args) == 1 and isinstance(args[0], bytes) and len(args[0]) == 16:
             b = args[0]
             guid = s.pack((int(b[3]) << 24) | (int(b[2]) << 16) | (int(b[1]) << 8) | b[0],
@@ -43,7 +44,7 @@ class Guid:
                 raise TypeError('Arguments don\'t match any allowed configuration')
             guid = s.pack((int(b[3]) << 24) | (int(b[2]) << 16) | (int(b[1]) << 8) | b[0],
                           ((int(b[5]) << 8) | b[4]),
-                          (int(b[7]) << 8) | b[6],
+                          ((int(b[7]) << 8) | b[6]),
                           *b[8:16]
                           )
             self.guid = s.unpack(guid)
@@ -60,10 +61,31 @@ class Guid:
                           *b[8:16]
                           )
             self.guid = s.unpack(guid)
-        elif len(args) == 1 and isinstance(args[0], str):
-            pass  # TODO Parse string input
+        elif len(args) == 1 and isinstance(args[0], str) and len(args[0]) == 36:
+            self.parse_string(args[0])
         else:
             raise TypeError('Arguments don\'t match any allowed configuration')
+
+    def parse_string(self, string):
+        if len(string) == 36:
+            if string[8] == '-' and string[13] == '-' and string[18] == '-' and string[23] == '-':
+                guid_str = string.split('-')
+                try:
+                    self.guid = (int(guid_str[0], 16),
+                                 int(guid_str[1], 16),
+                                 int(guid_str[2], 16),
+                                 int(guid_str[3], 16) >> 8,
+                                 int(guid_str[3], 16) & MAXINT8,
+                                 int(guid_str[4], 16) >> 40,
+                                 int(guid_str[4], 16) >> 32,
+                                 int(guid_str[4], 16) >> 24,
+                                 int(guid_str[4], 16) >> 16,
+                                 int(guid_str[4], 16) >> 8,
+                                 int(guid_str[4], 16) & MAXINT8,
+                                 )
+                except ValueError:
+                    raise TypeError('String is not formatted properly must be in format '
+                                    '00000000-0000-0000-0000-000000000000')
 
     def to_string(self):
         output = ''
