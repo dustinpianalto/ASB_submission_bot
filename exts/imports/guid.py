@@ -33,11 +33,11 @@ class Guid:
             guid = s.pack(args[0], args[1], args[2], *args[3])
             self.guid = s.unpack(guid)
         elif len(args) == 2 and all(isinstance(arg, int) for arg in args):
-            if all((self.bytes_needed(arg) <= 32) for arg in args):
+            if all((self.bytes_needed(arg) <= 4) for arg in args):
                 int1, int2 = (args[0] << 32), (args[1] & 0xFFFFFFFF)
                 id_int = int1 | int2
                 b = pack('Q8x', id_int)
-            elif all((self.bytes_needed(arg) <= 64) for arg in args):
+            elif all((self.bytes_needed(arg) <= 8) for arg in args):
                 b = pack('QQ', args[0], args[1])
             else:
                 raise TypeError('Arguments don\'t match any allowed configuration')
@@ -48,7 +48,7 @@ class Guid:
                           )
             self.guid = s.unpack(guid)
         elif len(args) == 1 and isinstance(args[0], int):
-            if self.bytes_needed(args[0]) <= 64:
+            if self.bytes_needed(args[0]) <= 8:
                 b = pack('Q8x', args[0])
             else:
                 first = (args[0] >> 64) & MAXINT64

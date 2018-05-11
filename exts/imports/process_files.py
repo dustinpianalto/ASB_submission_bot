@@ -47,8 +47,6 @@ def rename_section(cfg, sec, sec_new):
 
 def get_server_guid(server_file):
     server_file = server_file.encode()
-    # p = s.pack((int.from_bytes(hash.encode(), byteorder='little') >> 64) & max_int,
-    #            int.from_bytes(hash.encode(), byteorder='little') & max_int)
 
 
 
