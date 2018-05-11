@@ -1,7 +1,6 @@
 from struct import Struct, pack
 from math import log
 
-# 0012d687-d687-0012-0000-000000000000
 # 16 bytes, 11 arguments
 MAXINT64 = 0xFFFFFFFFFFFFFFFF
 MAXINT8 = 0xFF
@@ -127,10 +126,6 @@ class Guid:
         out = f'{self.hex_to_char(_a>>4)}{self.hex_to_char(_a)}{self.hex_to_char(_b>>4)}{self.hex_to_char(_b)}'
         return out
 
-    def get_hash_code(self):
-        t = self.guid
-        return t[0] ^ ((int(t[1]) << 16) | int(t[2])) ^ ((int(t[5]) << 24) | t[10])
-
     @staticmethod
     def bytes_needed(a):
         if a == 0:
@@ -142,6 +137,10 @@ class Guid:
         a = a & 0xf
         out = chr(a - 10 + 0x61 if a > 9 else a + 0x30)
         return out
+
+    def __hash__(self):
+        t = self.guid
+        return t[0] ^ ((int(t[1]) << 16) | int(t[2])) ^ ((int(t[5]) << 24) | t[10])
 
     def __eq__(self, other):
         if other is None or not isinstance(other, Guid):
@@ -177,4 +176,4 @@ class Guid:
         return self.to_string()
 
     def __repr__(self):
-        return f'<Guid hash={self.get_hash_code()}>'
+        return f'<Guid hash={self.__hash__()}>'
