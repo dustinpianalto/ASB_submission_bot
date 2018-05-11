@@ -54,6 +54,7 @@ class Submitter(commands.Bot):
                                         'poop': '💩',
                                         'boom': '💥',
                                         'left_fist': '🤛',
+                                        'o': '🇴',
                                         }
 
     async def connect_db(self):
