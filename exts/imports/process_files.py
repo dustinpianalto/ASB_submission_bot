@@ -20,7 +20,7 @@ def load_zip(file) -> zipfile.ZipFile:
 
 def check_for_mods(game_file) -> list:
     mods = list()
-    for line in list(map(bytes.decode, game_file.readlines())):
+    for line in game_file.readlines():
         if line.startswith('ModIDS='):
             mods.append(line.split('=')[1].strip())
     return mods
