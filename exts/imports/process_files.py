@@ -115,7 +115,7 @@ def process_file(in_file, file_type) -> ConfigParser:
             config = rename_section(config, section, section.title())
         else:
             config.remove_section(section)
-    print(config.sections(), config['Dino Ancestry']['DinoAncestorsCount'])
+    print(f"{config.sections()} {config['Dino Ancestry']['DinoAncestorsCount']}")
     return config
 
 
