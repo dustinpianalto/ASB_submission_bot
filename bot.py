@@ -32,6 +32,7 @@ from discord.ext import commands
 import logging
 import json
 import aiohttp
+import asyncio
 import asyncpg
 from concurrent import futures
 from typing import Dict
@@ -73,7 +74,7 @@ class Submitter(commands.Bot):
         self.infected = {}
         self.TOKEN = self.bot_secrets['token']
         del self.bot_secrets['token']
-        self.db_con = None
+        self.db_con = asyncio.get_event_loop().run_until_complete(self.connect_db())
         self.default_prefix = '!'
         self.tpe = futures.ThreadPoolExecutor()
         self.embed_color = discord.Colour.from_rgb(49, 107, 111)
@@ -86,12 +87,12 @@ class Submitter(commands.Bot):
                                         'o': '🇴',
                                         }
 
-    async def connect_db(self):
-        self.db_con = await asyncpg.create_pool(host=self.bot_secrets['db_con']['host'],
-                                                database=self.bot_secrets['db_con']['db_name'],
-                                                user=self.bot_secrets['db_con']['user'],
-                                                password=self.bot_secrets['db_con']['password'],
-                                                loop=self.loop)
+        async def connect_db():
+            return await asyncpg.create_pool(host=self.bot_secrets['db_con']['host'],
+                                             database=self.bot_secrets['db_con']['db_name'],
+                                             user=self.bot_secrets['db_con']['user'],
+                                             password=self.bot_secrets['db_con']['password'],
+                                             loop=self.loop)
 
     @staticmethod
     async def get_custom_prefix(bot_inst, message):
