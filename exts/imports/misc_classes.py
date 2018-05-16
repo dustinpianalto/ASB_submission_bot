@@ -15,19 +15,40 @@ class Color:
 
 
 class Dino:
-    def __init__(self, dino_data: configparser.ConfigParser):
-        self.dino_data_orig = dino_data
-        self.dino_data = self._get_dino_data(dino_data['Dino Data'])
-        self.colors = self._get_colors(dino_data['Colorization'])
-        self.stats = self._get_colors(dino_data['Max Character Status Values'])
-        self.ancestry = self._get_ancestry(dino_data['Dino Ancestry'], dino_data)
-        self.guid = self.get_guid()
+    def __init__(self, dino_data=None, parent=False):
+        self.parent = parent
+        if dino_data is None and parent is False:
+            self.dino_data = None
+            self.dino_data_orig = None
+            self.colors = None
+            self.stats = None
+            self.ancestry = None
+            self.guid = guid.Guid()
+        elif parent is False and isinstance(dino_data, configparser.ConfigParser):
+            self.dino_data_orig = dino_data
+            self.dino_data = self._get_dino_data(dino_data['Dino Data'])
+            self.colors = self._get_colors(dino_data['Colorization'])
+            self.stats = self._get_colors(dino_data['Max Character Status Values'])
+            self.ancestry = self._get_ancestry(dino_data['Dino Ancestry'], dino_data)
+            self.guid = self.get_guid()
+        elif parent is True and isinstance(dino_data, list):
+            self.dino_data = {
+                'TamedName': dino_data[0],
+                'DinoID1': dino_data[1],
+                'DinoID2': dino_data[2]
+            }
+            self.stats = self._zero_stats()
+            self.colors = list()
+            self.ancestry = dict()
+            self.guid = self.get_guid()
+        else:
+            raise TypeError('Arguments don\'t match any valid configuration.')
 
-    def get_guid(self):
+    def get_guid(self) -> guid.Guid:
         return guid.Guid(self.dino_data['DinoID1'], self.dino_data['DinoID2'])
 
     @staticmethod
-    def _get_colors(colorization):
+    def _get_colors(colorization) -> [Color]:
         colors = list()
         for color, values in colorization.items():
             value = values.strip('()').split(',')
@@ -38,8 +59,11 @@ class Dino:
             colors.append(Color(**c))
         return colors
 
+    def _zero_stats(self):
+        return self._get_stats({i: '0' for i in range(12)})
+
     @staticmethod
-    def _get_stats(stat_values):
+    def _get_stats(stat_values) -> dict:
         stats = [stat for stat in stat_values.values()]
         stats_dict = dict()
         stats_dict['Health'] = float(stats[0])
@@ -57,7 +81,7 @@ class Dino:
         return stats_dict
 
     @staticmethod
-    def _get_dino_data(dino_data):
+    def _get_dino_data(dino_data) -> dict:
         data = [d for d in dino_data.values()]
         data_dict = dict()
         data_dict['DinoID1'] = int(data[0])
@@ -83,7 +107,7 @@ class Dino:
         return data_dict
 
     @staticmethod
-    def _get_ancestry(ancestry_data, data):
+    def _get_ancestry(ancestry_data, data) -> dict:
         ancestry = [a for a in ancestry_data.values()]
         ancestry_dict = dict()
         ancestry_dict['DinoAncestorsCount'] = int(ancestry[0])
@@ -94,6 +118,62 @@ class Dino:
                 dino_anc = [a for a in data['DinoAncestors'].values()]
                 ancestors = list()
                 for dino in dino_anc:
-                    dino = dino.split(';')
-                    for field in dino:
-                        pass
+                    ancestors.append(dict([field.split('=') for field in dino.split(';')]))
+                ancestry_dict['DinoAncestors'] = ancestors
+
+        if ancestry_dict['DinoAncestorsMale'] != 0:
+            if 'DinoAncestorsMale' in data.sections():
+                dino_anc = [a for a in data['DinoAncestorsMale'].values()]
+                ancestors_male = list()
+                for dino in dino_anc:
+                    ancestors_male.append(dict([field.split('=') for field in dino.split(';')]))
+                ancestry_dict['DinoAncestorsMale'] = ancestors_male
+
+        return ancestry_dict
+
+    def parents(self) -> (Dino, Dino):
+        if 'DinoAncestors' in self.ancestry:
+            parents = self.ancestry['DinoAncestors'][-1]
+            father = Dino.from_min_req(parents['MaleName'],
+                                       parents['MaleDinoID1'],
+                                       parents['MaleDinoID2'],
+                                       True)
+            mother = Dino.from_min_req(parents['FemaleName'],
+                                       parents['FemaleDinoID1'],
+                                       parents['FemaleDinoID2'],
+                                       True)
+            return father, mother
+        else:
+            return Dino.empty(), Dino.empty()
+
+    @classmethod
+    def from_min_req(cls, name, id1, id2, parent=False):
+        return Dino([name, id1, id2], parent=parent)
+
+    @classmethod
+    def empty(cls):
+        return Dino()
+
+    def __eq__(self, other):
+        if isinstance(other, Dino):
+            if self.guid == other.guid:
+                return self.dino_data == other.dino_data and self.stats == other.stats
+            return False
+        elif isinstance(other, str):
+            try:
+                o = guid.Guid(other)
+            except TypeError:
+                return False
+            else:
+                return self.guid == o
+        elif isinstance(other, guid.Guid):
+            return self.guid == other
+        else:
+            return False
+
+    def __str__(self):
+        return f'<Dino name={self.dino_data["TamedName"]}, level={self.dino_data["CharacterLevel"]}, guid={self.guid}>'
+
+    def __repr__(self):
+        return (f'<Dino species={self.dino_data["DinoNameTag"]} name={self.dino_data["TamedName"]}, '
+                f'level={self.dino_data["CharacterLevel"]}, guid={self.guid}>')
