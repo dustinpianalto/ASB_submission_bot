@@ -1,0 +1,152 @@
+{
+    "[GS] Converter": {
+        "wildLevels": {
+            "health": 4,
+            "stamina": 4,
+            "torpor": 0,
+            "oxygen": 5,
+            "food": 7,
+            "water": 0,
+            "temperature": 0,
+            "weight": 6,
+            "melee": 4,
+            "speed": 4,
+            "fortitude": 0,
+            "crafting": 0
+        },
+        "tamedLevels": {
+            "health": 0,
+            "stamina": 0,
+            "torpor": 0,
+            "oxygen": 0,
+            "food": 0,
+            "water": 0,
+            "temperature": 0,
+            "weight": 50,
+            "melee": 0,
+            "speed": 0,
+            "fortitude": 0,
+            "crafting": 0
+        }
+    },
+    "[GS] Scarab": {
+        "wildLevels": {
+            "health": 16,
+            "stamina": 12,
+            "torpor": 0,
+            "oxygen": 16,
+            "food": 21,
+            "water": 0,
+            "temperature": 0,
+            "weight": 27,
+            "melee": 16,
+            "speed": 16,
+            "fortitude": 0,
+            "crafting": 0
+        },
+        "tamedLevels": {
+            "health": 0,
+            "stamina": 0,
+            "torpor": 0,
+            "oxygen": 0,
+            "food": 0,
+            "water": 0,
+            "temperature": 0,
+            "weight": 50,
+            "melee": 0,
+            "speed": 0,
+            "fortitude": 0,
+            "crafting": 0
+        }
+    },
+    "[GS] Snow": {
+        "wildLevels": {
+            "health": 26,
+            "stamina": 14,
+            "torpor": 0,
+            "oxygen": 20,
+            "food": 25,
+            "water": 0,
+            "temperature": 0,
+            "weight": 42,
+            "melee": 27,
+            "speed": 15,
+            "fortitude": 0,
+            "crafting": 0
+        },
+        "tamedLevels": {
+            "health": 0,
+            "stamina": 0,
+            "torpor": 0,
+            "oxygen": 0,
+            "food": 43,
+            "water": 0,
+            "temperature": 0,
+            "weight": 0,
+            "melee": 0,
+            "speed": 0,
+            "fortitude": 0,
+            "crafting": 0
+        }
+    },
+    "[GS] Stud": {
+        "wildLevels": {
+            "health": 24,
+            "stamina": 22,
+            "torpor": 0,
+            "oxygen": 15,
+            "food": 23,
+            "water": 0,
+            "temperature": 0,
+            "weight": 20,
+            "melee": 23,
+            "speed": 24,
+            "fortitude": 0,
+            "crafting": 0
+        },
+        "tamedLevels": {
+            "health": 0,
+            "stamina": 0,
+            "torpor": 0,
+            "oxygen": 0,
+            "food": 0,
+            "water": 0,
+            "temperature": 0,
+            "weight": 0,
+            "melee": 0,
+            "speed": 0,
+            "fortitude": 0,
+            "crafting": 0
+        }
+    },
+    "[GS] Sheep Trick": {
+        "wildLevels": {
+            "health": 8,
+            "stamina": 4,
+            "torpor": 0,
+            "oxygen": 3,
+            "food": 5,
+            "water": 0,
+            "temperature": 0,
+            "weight": 4,
+            "melee": 4,
+            "speed": 6,
+            "fortitude": 0,
+            "crafting": 0
+        },
+        "tamedLevels": {
+            "health": 0,
+            "stamina": 0,
+            "torpor": 0,
+            "oxygen": 0,
+            "food": 26,
+            "water": 0,
+            "temperature": 0,
+            "weight": 16,
+            "melee": 0,
+            "speed": 0,
+            "fortitude": 0,
+            "crafting": 0
+        }
+    }
+}
