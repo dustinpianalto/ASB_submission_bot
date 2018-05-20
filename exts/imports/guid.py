@@ -49,7 +49,7 @@ class Guid:
     Attributes:
         guid (tuple): A tuple containing the guid
     """
-    def __init__(self, *args):
+    def __init__(self, guid_tuple: tuple=()):
         """
         Initialize the Guid
 
@@ -62,76 +62,79 @@ class Guid:
                 (int(len <= 16))
                 (str) - str must be formatted 00000000-0000-0000-0000-000000000000
         """
-        # Guid will be stored as a tuple len 11
-        if bool(args):
-            self.get_guid(args)
+        if bool(guid_tuple):
+            if len(guid_tuple) == 11:
+                if all(isinstance(t, int) for t in guid_tuple):
+                    s = Struct('I2H8B')
+                    guid = s.pack(guid_tuple[0],
+                                  guid_tuple[1] & MAXINT16,
+                                  guid_tuple[2] & MAXINT16,
+                                  *guid_tuple[3])
+                    self.guid = s.unpack(guid)
+                else:
+                    raise RuntimeError('Every item in tuple must be an integer')
+            else:
+                raise RuntimeError('Tuple must be length 11 to create the guid')
         else:
             self.guid = (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 
-    def get_guid(self, args) -> None:
+    @classmethod
+    def from_tuple(cls, guid_bytes: bytes):
         s = Struct('I2H8B')
-        if len(args) == 1 and isinstance(args[0], bytes) and len(args[0]) == 16:
-            b = args[0]
-            guid = s.pack((int(b[3]) << 24) | (int(b[2]) << 16) | (int(b[1]) << 8) | b[0],
-                          ((int(b[5]) << 8) | b[4]),
-                          (int(b[7]) << 8) | b[6],
-                          *b[8:16]
+        if len(guid_bytes) == 16:
+            guid = s.pack((int(guid_bytes[3]) << 24)
+                          | (int(guid_bytes[2]) << 16)
+                          | (int(guid_bytes[1]) << 8)
+                          | guid_bytes[0],
+                          (int(guid_bytes[5]) << 8)
+                          | guid_bytes[4],
+                          (int(guid_bytes[7]) << 8)
+                          | guid_bytes[6],
+                          *guid_bytes[8:16]
                           )
-            self.guid = s.unpack(guid)
-        elif len(args) == 4 and all(isinstance(arg, int) for arg in args[0:3]) \
-                and isinstance(args[3], bytes) and len(args[3]) == 8:
-            guid = s.pack(args[0], args[1] & MAXINT16, args[2] & MAXINT16, *args[3])
-            self.guid = s.unpack(guid)
-        elif len(args) == 2 and all(isinstance(arg, int) for arg in args):
-            if all((self.bytes_needed(arg) <= 4) for arg in args):
-                int1, int2 = (args[0] << 32), (args[1] & 0xFFFFFFFF)
-                id_int = int1 | int2
-                b = pack('Q8x', id_int)
-            elif all((self.bytes_needed(arg) <= 8) for arg in args):
-                b = pack('QQ', args[0], args[1])
-            else:
-                raise TypeError('Arguments don\'t match any allowed configuration')
-            guid = s.pack((int(b[3]) << 24) | (int(b[2]) << 16) | (int(b[1]) << 8) | b[0],
-                          ((int(b[5]) << 8) | b[4]),
-                          ((int(b[7]) << 8) | b[6]),
-                          *b[8:16]
-                          )
-            self.guid = s.unpack(guid)
-        elif len(args) == 1 and isinstance(args[0], int):
-            if self.bytes_needed(args[0]) <= 8:
-                b = pack('Q8x', args[0])
-            else:
-                first = (args[0] >> 64) & MAXINT64
-                second = args[0] & MAXINT64
-                b = pack('QQ', first, second)
-            guid = s.pack((int(b[3]) << 24) | (int(b[2]) << 16) | (int(b[1]) << 8) | b[0],
-                          ((int(b[5]) << 8) | b[4]),
-                          (int(b[7]) << 8) | b[6],
-                          *b[8:16]
-                          )
-            self.guid = s.unpack(guid)
-        elif len(args) == 1 and isinstance(args[0], str) and len(args[0]) == 36:
-            self.parse_string(args[0])
+            return cls(s.unpack(guid))
         else:
-            raise TypeError('Arguments don\'t match any allowed configuration')
+            raise RuntimeError('Bytes object must be of length 16 to create a '
+                               'guid')
 
-    def parse_string(self, string):
+    @classmethod
+    def from_int(cls, guid_int1: int, guid_int2: int=0):
+        if cls.bytes_needed(guid_int1) <= 16 and guid_int2 == 0:
+            b = pack('QQ', guid_int1 >> 64, guid_int1 & MAXINT64)
+        elif cls.bytes_needed(guid_int1) <= 4 and cls.bytes_needed(guid_int2) <= 4:
+            int1, int2 = (guid_int1 << 32), (guid_int2 & 0xFFFFFFFF)
+            guid_int = int1 | int2
+            b = pack('Q8x', guid_int)
+        elif cls.bytes_needed(guid_int1) <= 8 and cls.bytes_needed(guid_int2) <= 8:
+            b = pack('QQ', guid_int1, guid_int2)
+        else:
+            raise RuntimeError('Integer is to large')
+        guid = ((int(b[3]) << 24) | (int(b[2]) << 16) | (int(b[1]) << 8) | b[0],
+                ((int(b[5]) << 8) | b[4]),
+                ((int(b[7]) << 8) | b[6]),
+                *b[8:16]
+                )
+        return cls(s.unpack(guid))
+
+    @classmethod
+    def from_string(cls, string: str):
         if len(string) == 36:
             if string[8] == '-' and string[13] == '-' and string[18] == '-' and string[23] == '-':
                 guid_str = string.split('-')
                 try:
-                    self.guid = (int(guid_str[0], 16),
-                                 int(guid_str[1], 16),
-                                 int(guid_str[2], 16),
-                                 int(guid_str[3], 16) >> 8,
-                                 int(guid_str[3], 16) & MAXINT8,
-                                 int(guid_str[4], 16) >> 40,
-                                 int(guid_str[4], 16) >> 32,
-                                 int(guid_str[4], 16) >> 24,
-                                 int(guid_str[4], 16) >> 16,
-                                 int(guid_str[4], 16) >> 8,
-                                 int(guid_str[4], 16) & MAXINT8,
-                                 )
+                    guid = (int(guid_str[0], 16),
+                            int(guid_str[1], 16),
+                            int(guid_str[2], 16),
+                            int(guid_str[3], 16) >> 8,
+                            int(guid_str[3], 16) & MAXINT8,
+                            int(guid_str[4], 16) >> 40,
+                            int(guid_str[4], 16) >> 32,
+                            int(guid_str[4], 16) >> 24,
+                            int(guid_str[4], 16) >> 16,
+                            int(guid_str[4], 16) >> 8,
+                            int(guid_str[4], 16) & MAXINT8,
+                            )
+                    return cls(guid)
                 except ValueError:
                     raise TypeError('String is not formatted properly must be in format '
                                     '00000000-0000-0000-0000-000000000000')
