@@ -52,7 +52,7 @@ GEPOCH = datetime(2018, 1, 1).timestamp()
 
 
 class Guid:
-    """This function does something.
+    """Creates a unique Guid object.
 
     Args:
        :param guid_tuple: (Optional) A tuple of length 11 containing
